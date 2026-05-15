@@ -20,22 +20,17 @@ fun AppNavHost(
         modifier = modifier.fillMaxSize()
     ) {
         composable(Screen.Login.route) {
-            LoginScreen(onClick = {
-                navHostController.navigate(Screen.NewsHome.route) {
-                    // Clear the back stack to prevent navigating back to the login screen
-//                        popUpTo(Screen.Login.route) {
-//                            inclusive = true
-//                        }
+            LoginScreen(
+                onClick = {
+                    navHostController.navigate(Screen.NewsHome.route)
                 }
-            })
-            // LoginScreen(navController = navHostController)
+            )
         }
         composable(Screen.NewsHome.route) {
             NewsHomeScreen()
-            // NewsHomeScreen(navController = navHostController)
         }
         composable(Screen.NewsDetail.route) {
-            // NewsDetailScreen(navController = navHostController)
+//            NewsDetailScreen()
         }
     }
 }
