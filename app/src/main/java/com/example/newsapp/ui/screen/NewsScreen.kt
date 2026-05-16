@@ -1,5 +1,6 @@
 package com.example.newsapp.ui.screen
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -20,20 +23,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.newsapp.ui.theme.NewsAppTheme
+import com.example.newsapp.ui.viewmodel.NewsViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
+import com.example.newsapp.R
+import com.example.newsapp.ui.theme.Typography
 
 @Composable
-fun NewsHomeScreen() {
+fun NewsScreen(
+    viewModel: NewsViewModel,
+    onNewsClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val totalResults = viewModel.topHeadlines.collectAsState().value?.totalResults ?: 0
+    val numOfArticles = viewModel.topHeadlines.collectAsState().value?.articles?.size ?: 0
+    val headlines = viewModel.topHeadlines.collectAsState()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .safeDrawingPadding()
             .fillMaxSize()
     ) {
-        LazyColumn() {
-            items(4) {
+        LazyColumn(
+            modifier = modifier
+        ) {
+            items(count = numOfArticles) {
                 NewsCard(
-                    name = "Android $it"
+                    title = headlines.value?.articles[it]?.title ?: "Title Not Available",
+                    imageUrl = headlines.value?.articles[it]?.urlToImage ?: ""
                 )
             }
         }
@@ -42,16 +64,23 @@ fun NewsHomeScreen() {
 }
 
 @Preview(showBackground = true)
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NewsHomeScreenPreview() {
+fun NewsScreenPreview() {
     NewsAppTheme {
-        NewsHomeScreen()
+        NewsScreen(
+            viewModel = viewModel(),
+            onNewsClick = {}
+        )
     }
 }
 
 @Composable
-fun NewsCard(name: String, modifier: Modifier = Modifier) {
+fun NewsCard(
+    title: String = "",
+    imageUrl: String = "",
+    modifier: Modifier = Modifier
+) {
     Card(
         shape = CardDefaults.elevatedShape,
         elevation = CardDefaults.outlinedCardElevation(),
@@ -62,20 +91,17 @@ fun NewsCard(name: String, modifier: Modifier = Modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box() {
-                Image(
-                    painter = painterResource(id = com.example.newsapp.R.drawable.ic_launcher_background),
-                    contentDescription = "News Image background",
-                    modifier = modifier
-                )
-                Image(
-                    painter = painterResource(id = com.example.newsapp.R.drawable.ic_launcher_foreground),
-                    contentDescription = "News Image foreground",
-                    modifier = modifier
-                )
-            }
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = "News Image",
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                error = painterResource(id = R.drawable.ic_launcher_foreground),
+                contentScale = ContentScale.Crop,
+                modifier = modifier.size(100.dp)
+            )
             Text(
-                text = "News Title: $name",
+                text = title,
+                fontSize = Typography.labelSmall.fontSize,
                 modifier = modifier.padding(16.dp)
             )
         }

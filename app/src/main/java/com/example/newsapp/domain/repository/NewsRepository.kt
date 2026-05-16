@@ -12,7 +12,8 @@ class NewsRepository(
     private val newsService: NewsServiceEndpoints
 ) {
     // This is a placeholder for the actual implementation of the NewsRepository.
-    // In a real application, this class would contain methods to fetch news data from a remote source, such as an API, and possibly also methods to cache data locally.
+    // In a real application, this class would contain methods to fetch news data from a remote source,
+    // such as an API, and possibly also methods to cache data locally.
     private val apiKey = BuildConfig.API_KEY
 
     suspend fun fetchTopHeadlinesForCountry(country: String): ResultState<News> {
@@ -27,7 +28,25 @@ class NewsRepository(
              *  - we need a hot flow from viewmodel to emit data to UI.
              */
 
+        } catch (e: HttpException) {
+            // Handle HTTP exceptions, such as 404 or 500 errors
+            ResultState.Error("HTTP error: ${e.response.code}", e)
+        } catch (e: CancellationException) {
+            // Handle coroutine cancellation
+            ResultState.Error("Operation cancelled", e)
+        } catch (e: IOException) {
+            // Handle any other exceptions that may occur
+            ResultState.Error("Network error: ${e.message}", e)
+        } catch (e: Exception) {
+            // Handle any other exceptions that may occur
+            ResultState.Error("An unexpected error occurred: ${e.message}", e)
+        }
+    }
 
+    suspend fun fetchNewsForInput(input: String): ResultState<News> {
+        return try {
+            val newsForInput = newsService.getNewsForInput(apiKey = apiKey, input = input)
+            ResultState.Success(newsForInput)
         } catch (e: HttpException) {
             // Handle HTTP exceptions, such as 404 or 500 errors
             ResultState.Error("HTTP error: ${e.response.code}", e)

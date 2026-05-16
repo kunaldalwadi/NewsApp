@@ -13,7 +13,7 @@ object RetrofitInstance {
             .build()
     }
 
-    val newsServiceEndpoints by lazy {
+    val newsServiceEndpoints: NewsServiceEndpoints by lazy {
         retrofit.create(NewsServiceEndpoints::class.java)
     }
 }

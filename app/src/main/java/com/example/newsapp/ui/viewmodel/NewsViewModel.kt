@@ -13,6 +13,9 @@ class NewsViewModel(
     private val _topHeadlines = MutableStateFlow<News?>(null)
     val topHeadlines = _topHeadlines.asStateFlow()
 
+    private val _resultsForInput = MutableStateFlow<News?>(null)
+    val resultsForInput = _resultsForInput.asStateFlow()
+
     init {
         getTopHeadlinesFromCountry()
     }
@@ -20,6 +23,20 @@ class NewsViewModel(
     private fun getTopHeadlinesFromCountry(country: String = "us") {
         launchSafely(showLoading = true) {
             when (val result = newsRepository.fetchTopHeadlinesForCountry(country)) {
+                is ResultState.Success -> {
+                    _topHeadlines.value = result.data
+                }
+
+                is ResultState.Error -> {
+                    setError(result.message)
+                }
+            }
+        }
+    }
+
+    private fun getNewsForInput(input: String) {
+        launchSafely(showLoading = true) {
+            when(val result = newsRepository.fetchNewsForInput(input)) {
                 is ResultState.Success -> {
                     _topHeadlines.value = result.data
                 }
