@@ -22,24 +22,37 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.newsapp.R
+import com.example.newsapp.data.model.Article
 import com.example.newsapp.ui.theme.NewsAppTheme
 import com.example.newsapp.ui.theme.Typography
 import com.example.newsapp.ui.viewmodel.NewsViewModel
 
 @Composable
-fun NewsScreen(
+fun NewsRoute(
     viewModel: NewsViewModel,
     onNewsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
     val headlines = viewModel.topHeadlines.collectAsState()
+    val articles = headlines.value?.articles.orEmpty()
     val totalResults = headlines.value?.totalResults ?: 0
     val numOfArticles = headlines.value?.articles?.size ?: 0
 
+    NewsScreen(
+        articles = articles,
+        onNewsClick = onNewsClick,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun NewsScreen(
+    articles: List<Article>,
+    onNewsClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -50,10 +63,10 @@ fun NewsScreen(
             state = rememberLazyListState(),
             modifier = modifier.weight(1f)
         ) {
-            items(count = numOfArticles) {
+            items(count = articles.size) {
                 NewsCard(
-                    title = headlines.value?.articles[it]?.title ?: "Title Not Available",
-                    imageUrl = headlines.value?.articles[it]?.urlToImage ?: ""
+                    title = articles[it].title ?: "Title Not Available",
+                    imageUrl = articles[it].urlToImage ?: ""
                 )
             }
         }
@@ -69,7 +82,18 @@ fun NewsScreen(
 fun NewsScreenPreview() {
     NewsAppTheme {
         NewsScreen(
-            viewModel = viewModel(),
+            articles = listOf(
+                Article(
+                    author = "John Doe",
+                    content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                    description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                    publishedAt = "2024-06-01T12:00:00Z",
+                    source = com.example.newsapp.data.model.Source(id = "1", name = "Example Source"),
+                    title = "Sample News Title",
+                    url = "https://example.com/news/sample-news-title",
+                    urlToImage = "https://example.com/news/sample-image.jpg"
+                )
+            ),
             onNewsClick = {}
         )
     }

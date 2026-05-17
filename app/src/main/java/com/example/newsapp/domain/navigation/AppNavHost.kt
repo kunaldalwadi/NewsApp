@@ -3,17 +3,14 @@ package com.example.newsapp.domain.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.newsapp.data.remotedatasource.NewsServiceEndpoints
 import com.example.newsapp.domain.network.RetrofitInstance
 import com.example.newsapp.domain.repository.NewsRepository
 import com.example.newsapp.ui.screen.LoginScreen
-import com.example.newsapp.ui.screen.NewsScreen
+import com.example.newsapp.ui.screen.NewsRoute
 import com.example.newsapp.ui.viewmodel.NewsViewModel
 import com.example.newsapp.ui.viewmodel.NewsViewModelFactory
 
@@ -36,7 +33,24 @@ fun AppNavHost(
         composable(Screen.NewsHome.route) {
             val repository = NewsRepository(newsService = RetrofitInstance.newsServiceEndpoints)
             val vm: NewsViewModel = viewModel(factory = NewsViewModelFactory(newsRepository = repository))
-            NewsScreen(
+
+            /**
+             * In a real app, you would likely want to use a dependency injection framework like Hilt
+             * or Koin to provide the ViewModel and Repository instances, rather than creating them directly in the composable.
+             * This is just for demonstration purposes.
+             *
+             * This approach of separating the NewsRoute and NewsScreen composables
+             * allows for better separation of concerns and makes it easier to manage the state and navigation logic in the app.
+             *
+             * The NewsRoute composable is responsible for handling the navigation logic and
+             * providing the necessary data to the NewsScreen composable,
+             * while the NewsScreen composable is responsible for displaying the UI based on the data
+             * it receives. This way, the UI and navigation logic are decoupled, making the code more modular and easier to maintain.
+             *
+             * Also, previews become easier as we do not have to pass the viewmodel and navigation
+             * controller to the NewsScreen composable, we can just pass dummy data to it.
+             */
+            NewsRoute(
                 viewModel = vm,
                 onNewsClick = {
                     navHostController.navigate(Screen.NewsDetail.route)

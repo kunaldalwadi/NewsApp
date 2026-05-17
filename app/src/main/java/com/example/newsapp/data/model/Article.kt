@@ -21,5 +21,5 @@ data class Article(
     @SerialName("url")
     val url: String,
     @SerialName("urlToImage")
-    val urlToImage: String
+    val urlToImage: String?
 )

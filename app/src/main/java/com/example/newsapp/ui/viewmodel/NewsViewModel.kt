@@ -38,7 +38,7 @@ class NewsViewModel(
         launchSafely(showLoading = true) {
             when(val result = newsRepository.fetchNewsForInput(input)) {
                 is ResultState.Success -> {
-                    _topHeadlines.value = result.data
+                    _resultsForInput.value = result.data
                 }
 
                 is ResultState.Error -> {
