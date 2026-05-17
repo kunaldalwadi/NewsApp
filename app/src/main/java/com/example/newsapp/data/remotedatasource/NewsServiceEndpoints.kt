@@ -1,6 +1,6 @@
 package com.example.newsapp.data.remotedatasource
 
-import com.example.newsapp.data.model.News
+import com.example.newsapp.data.datamodel.News
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query

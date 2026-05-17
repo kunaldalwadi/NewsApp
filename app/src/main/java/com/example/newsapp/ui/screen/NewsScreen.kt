@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -24,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.newsapp.R
-import com.example.newsapp.data.model.Article
+import com.example.newsapp.data.datamodel.Article
 import com.example.newsapp.ui.theme.NewsAppTheme
 import com.example.newsapp.ui.theme.Typography
 import com.example.newsapp.ui.viewmodel.NewsViewModel
@@ -55,9 +54,7 @@ fun NewsScreen(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .safeDrawingPadding()
-            .fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         LazyColumn(
             state = rememberLazyListState(),
@@ -65,8 +62,8 @@ fun NewsScreen(
         ) {
             items(count = articles.size) {
                 NewsCard(
-                    title = articles[it].title ?: "Title Not Available",
-                    imageUrl = articles[it].urlToImage ?: ""
+                    title = articles[it].title,
+                    imageUrl = articles[it].urlToImage.orEmpty(),
                 )
             }
         }
@@ -88,7 +85,7 @@ fun NewsScreenPreview() {
                     content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                     description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                     publishedAt = "2024-06-01T12:00:00Z",
-                    source = com.example.newsapp.data.model.Source(id = "1", name = "Example Source"),
+                    source = com.example.newsapp.data.datamodel.Source(id = "1", name = "Example Source"),
                     title = "Sample News Title",
                     url = "https://example.com/news/sample-news-title",
                     urlToImage = "https://example.com/news/sample-image.jpg"
@@ -109,7 +106,7 @@ fun NewsCard(
         shape = CardDefaults.elevatedShape,
         elevation = CardDefaults.outlinedCardElevation(),
         modifier = modifier
-            .padding(16.dp)
+            .padding(8.dp)
             .fillMaxWidth()
     ) {
         Row(
@@ -141,6 +138,6 @@ fun GoToDetailScreenButton(
         onClick = onNewsClick,
         modifier = modifier.padding(16.dp)
     ) {
-        Text(text = "NewsHome   ->   NewsDetail")
+        Text(text = "News   ->   NewsDetail")
     }
 }

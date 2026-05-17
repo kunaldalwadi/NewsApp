@@ -2,7 +2,7 @@ package com.example.newsapp.domain.repository
 
 import coil.network.HttpException
 import com.example.newsapp.BuildConfig
-import com.example.newsapp.data.model.News
+import com.example.newsapp.data.datamodel.News
 import com.example.newsapp.data.remotedatasource.NewsServiceEndpoints
 import com.example.newsapp.domain.common.ResultState
 import kotlinx.coroutines.CancellationException

@@ -1,6 +1,6 @@
 package com.example.newsapp.ui.viewmodel
 
-import com.example.newsapp.data.model.News
+import com.example.newsapp.data.datamodel.News
 import com.example.newsapp.domain.common.ResultState
 import com.example.newsapp.domain.repository.NewsRepository
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -27,10 +27,10 @@ fun AppNavHost(
         composable(Screen.Login.route) {
             LoginScreen(
                 onClick = {
-                    navHostController.navigate(Screen.NewsHome.route)
+                    navHostController.navigate(Screen.News.route)
                 })
         }
-        composable(Screen.NewsHome.route) {
+        composable(Screen.News.route) {
             val repository = NewsRepository(newsService = RetrofitInstance.newsServiceEndpoints)
             val vm: NewsViewModel = viewModel(factory = NewsViewModelFactory(newsRepository = repository))
 
