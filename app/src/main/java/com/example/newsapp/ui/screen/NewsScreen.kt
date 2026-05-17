@@ -1,9 +1,6 @@
 package com.example.newsapp.ui.screen
 
 import android.content.res.Configuration
-import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,26 +9,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.newsapp.ui.theme.NewsAppTheme
-import com.example.newsapp.ui.viewmodel.NewsViewModel
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import com.example.newsapp.R
+import com.example.newsapp.ui.theme.NewsAppTheme
 import com.example.newsapp.ui.theme.Typography
+import com.example.newsapp.ui.viewmodel.NewsViewModel
 
 @Composable
 fun NewsScreen(
@@ -39,9 +35,10 @@ fun NewsScreen(
     onNewsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val totalResults = viewModel.topHeadlines.collectAsState().value?.totalResults ?: 0
-    val numOfArticles = viewModel.topHeadlines.collectAsState().value?.articles?.size ?: 0
+
     val headlines = viewModel.topHeadlines.collectAsState()
+    val totalResults = headlines.value?.totalResults ?: 0
+    val numOfArticles = headlines.value?.articles?.size ?: 0
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -50,7 +47,8 @@ fun NewsScreen(
             .fillMaxSize()
     ) {
         LazyColumn(
-            modifier = modifier
+            state = rememberLazyListState(),
+            modifier = modifier.weight(1f)
         ) {
             items(count = numOfArticles) {
                 NewsCard(
@@ -59,7 +57,9 @@ fun NewsScreen(
                 )
             }
         }
-        GoToDetailScreenButton()
+        GoToDetailScreenButton(
+            onNewsClick = onNewsClick,
+        )
     }
 }
 
@@ -109,10 +109,13 @@ fun NewsCard(
 }
 
 @Composable
-fun GoToDetailScreenButton() {
+fun GoToDetailScreenButton(
+    onNewsClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Button(
-        onClick = { Log.d("Button Clicked", "GoToDetailScreenButton: Clicked") },
-        modifier = Modifier.padding(16.dp)
+        onClick = onNewsClick,
+        modifier = modifier.padding(16.dp)
     ) {
         Text(text = "NewsHome   ->   NewsDetail")
     }
