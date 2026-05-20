@@ -1,9 +1,12 @@
 package com.example.newsapp.data.datamodel
 
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Serializable
 data class Article(
     @SerialName("author")
@@ -22,4 +25,4 @@ data class Article(
     val url: String,
     @SerialName("urlToImage")
     val urlToImage: String?
-)
+) : Parcelable

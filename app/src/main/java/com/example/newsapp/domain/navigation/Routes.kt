@@ -1,8 +1,10 @@
 package com.example.newsapp.domain.navigation
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Icon
 import androidx.compose.ui.unit.dp
 import com.example.newsapp.ui.uimodel.AppBarConfig
@@ -15,7 +17,7 @@ sealed class Screen(
         route = "login",
         appBarConfig = AppBarConfig(
             title = "Login",
-            visible = false,
+            visible = true,
             showBackButton = false,
         )
     )
@@ -29,11 +31,22 @@ sealed class Screen(
             actions = {
                 // You can add action icons here if needed
                 Icon(
-                    imageVector = androidx.compose.material.icons.Icons.Default.Refresh,
+                    imageVector = Icons.Default.Save,
+                    contentDescription = "Save",
+                    modifier = androidx.compose.ui.Modifier
+                        .padding(horizontal = 4.dp)
+                )
+                Icon(
+                    imageVector = Icons.Default.Refresh,
                     contentDescription = "Refresh",
                     modifier = androidx.compose.ui.Modifier
-                        .padding(horizontal = 8.dp)
-                        .clickable { /* Handle refresh action */ }
+                        .padding(horizontal = 4.dp)
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                    contentDescription = "Logout",
+                    modifier = androidx.compose.ui.Modifier
+                        .padding(horizontal = 4.dp)
                 )
             }
         )

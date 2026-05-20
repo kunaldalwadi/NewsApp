@@ -1,5 +1,6 @@
-package com.example.newsapp.ui.screen
+package com.example.newsapp.ui.login
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -29,7 +30,7 @@ fun LoginScreen(
 }
 
 @Preview(showBackground = true)
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun LoginScreenPreview() {
     NewsAppTheme {

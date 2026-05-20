@@ -1,12 +1,14 @@
 package com.example.newsapp.domain.repository
 
-import coil.network.HttpException
+import retrofit2.HttpException
 import com.example.newsapp.BuildConfig
 import com.example.newsapp.data.datamodel.News
 import com.example.newsapp.data.remotedatasource.NewsServiceEndpoints
+import com.example.newsapp.domain.common.AppError
 import com.example.newsapp.domain.common.ResultState
 import kotlinx.coroutines.CancellationException
 import okio.IOException
+import java.net.SocketTimeoutException
 
 class NewsRepository(
     private val newsService: NewsServiceEndpoints
@@ -28,18 +30,8 @@ class NewsRepository(
              *  - we need a hot flow from viewmodel to emit data to UI.
              */
 
-        } catch (e: HttpException) {
-            // Handle HTTP exceptions, such as 404 or 500 errors
-            ResultState.Error("HTTP error: ${e.response.code}", e)
-        } catch (e: CancellationException) {
-            // Handle coroutine cancellation
-            ResultState.Error("Operation cancelled", e)
-        } catch (e: IOException) {
-            // Handle any other exceptions that may occur
-            ResultState.Error("Network error: ${e.message}", e)
-        } catch (e: Exception) {
-            // Handle any other exceptions that may occur
-            ResultState.Error("An unexpected error occurred: ${e.message}", e)
+        } catch (e: Throwable) {
+            ResultState.Error(mapThrowableToAppError(e))
         }
     }
 
@@ -47,18 +39,28 @@ class NewsRepository(
         return try {
             val newsForInput = newsService.getNewsForInput(apiKey = apiKey, input = input)
             ResultState.Success(newsForInput)
-        } catch (e: HttpException) {
-            // Handle HTTP exceptions, such as 404 or 500 errors
-            ResultState.Error("HTTP error: ${e.response.code}", e)
-        } catch (e: CancellationException) {
-            // Handle coroutine cancellation
-            ResultState.Error("Operation cancelled", e)
-        } catch (e: IOException) {
-            // Handle any other exceptions that may occur
-            ResultState.Error("Network error: ${e.message}", e)
-        } catch (e: Exception) {
-            // Handle any other exceptions that may occur
-            ResultState.Error("An unexpected error occurred: ${e.message}", e)
+        } catch (e: Throwable) {
+            ResultState.Error(mapThrowableToAppError(e))
+        }
+    }
+
+    private fun mapThrowableToAppError(throwable: Throwable): AppError {
+        return when (throwable) {
+            is CancellationException -> AppError.OperationCancelled
+            is SocketTimeoutException -> AppError.Timeout
+            is IOException -> AppError.NetworkUnavailable
+            is HttpException -> mapHttpCodeToAppError(throwable.code())
+            else -> AppError.Unknown(throwable)
+        }
+    }
+
+    private fun mapHttpCodeToAppError(code: Int): AppError {
+        return when (code) {
+            401 -> AppError.Unauthorized
+            403 -> AppError.Forbidden
+            404 -> AppError.NotFound
+            in 500..599 -> AppError.Server
+            else -> AppError.Http(code)
         }
     }
 }

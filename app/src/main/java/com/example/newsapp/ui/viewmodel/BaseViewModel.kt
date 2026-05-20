@@ -1,5 +1,6 @@
 package com.example.newsapp.ui.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,33 +16,21 @@ open class BaseViewModel : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _errorMessage = mutableStateOf<String?>(null)
-    val errorMessage: String? = _errorMessage.value
-
     protected fun setLoading(loading: Boolean) {
         _isLoading.value = loading
-    }
-
-    protected fun setError(message: String?) {
-        _errorMessage.value = message
-    }
-
-     protected fun clearError() {
-        _errorMessage.value = null
     }
 
     protected fun launchSafely(
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         showLoading: Boolean = false,
         onError: (Throwable) -> Unit = { throwable ->
-            setError(throwable.message ?: "An unknown error occurred")
+            Log.d("Launch Safely BaseViewModel ---> ", "${throwable.message}")
         },
         block: suspend () -> Unit
     ) {
         viewModelScope.launch(dispatcher) {
             try {
                 if (showLoading) setLoading(true)
-                clearError()
                 block()
             } catch (cancel: CancellationException) {
                 throw cancel

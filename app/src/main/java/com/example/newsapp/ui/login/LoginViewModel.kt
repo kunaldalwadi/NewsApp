@@ -1,5 +1,6 @@
-package com.example.newsapp.ui.viewmodel
+package com.example.newsapp.ui.login
 
+import com.example.newsapp.ui.viewmodel.BaseViewModel
 import kotlinx.coroutines.delay
 
 class LoginViewModel(
