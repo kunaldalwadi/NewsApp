@@ -69,7 +69,9 @@ fun AppNavHost(
 
             // Remove the article from the saved state handle to prevent it from being reused
             // if the user navigates back to this screen again
-            navHostController.previousBackStackEntry?.savedStateHandle?.remove<Article>(key = "selected_article")
+            // This is currently creating an issue when we are on the screen and the screen recomposes,
+            // the article is being removed from the saved state handle and the screen is showing "Unknown Source".
+//            navHostController.previousBackStackEntry?.savedStateHandle?.remove<Article>(key = "selected_article")
 
             NewsDetailRoute(
                 article = article

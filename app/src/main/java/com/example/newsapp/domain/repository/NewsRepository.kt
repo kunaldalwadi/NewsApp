@@ -42,16 +42,17 @@ class NewsRepository(
          */
 
     }.catch {
-        emit(value = ResultState.Error(mapThrowableToAppError(it)))
+        emit(value = ResultState.Error(mapThrowableToAppError(throwable = it)))
     }
 
-    suspend fun fetchNewsForInput(input: String): ResultState<News> {
-        return try {
-            val newsForInput = newsService.getNewsForInput(apiKey = apiKey, input = input)
-            ResultState.Success(newsForInput)
-        } catch (e: Throwable) {
-            ResultState.Error(mapThrowableToAppError(e))
-        }
+    fun fetchNewsForInput(input: String): Flow<ResultState<News>> = flow<ResultState<News>> {
+        emit(value = ResultState.Loading)
+
+        val newsForInput = newsService.getNewsForInput(apiKey = apiKey, input = input)
+
+        emit(value = ResultState.Success(data = newsForInput))
+    }.catch {
+        emit(value = ResultState.Error(mapThrowableToAppError(throwable = it)))
     }
 
     private fun mapThrowableToAppError(throwable: Throwable): AppError {
