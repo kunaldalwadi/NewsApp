@@ -15,17 +15,34 @@ import com.example.newsapp.ui.theme.NewsAppTheme
 
 @Composable
 fun LoginScreen(
-    onClick: () -> Unit,
+    onTopHeadlinesClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.safeDrawingPadding()
     ) {
-        Greeting(
-            name = "Android"
+        AppTitle()
+        ButtonWithText(
+            buttonText = "Top Headlines",
+            action = onTopHeadlinesClick
         )
-        LoginButton(onClick = onClick)
+        ButtonWithText(
+            buttonText = "News Sources",
+            action = { }
+        )
+        ButtonWithText(
+            buttonText = "Countries",
+            action = {  }
+        )
+        ButtonWithText(
+            buttonText = "Languages",
+            action = {  }
+        )
+        ButtonWithText(
+            buttonText = "Search",
+            action = {  }
+        )
     }
 }
 
@@ -39,19 +56,22 @@ fun LoginScreenPreview() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun AppTitle(modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+        text = "Welcome to the News App",
         modifier = modifier
     )
 }
 
 @Composable
-fun LoginButton(onClick: () -> Unit = {}) {
+fun ButtonWithText(
+    buttonText: String,
+    action: () -> Unit = {}
+) {
     Button(
-        onClick = onClick,
+        onClick = action,
         modifier = Modifier.padding(16.dp)
     ) {
-        Text(text = "Login   ->   News")
+        Text(text = buttonText)
     }
 }

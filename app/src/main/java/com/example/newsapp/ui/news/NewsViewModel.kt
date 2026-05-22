@@ -23,21 +23,24 @@ class NewsViewModel(
 
     private fun getTopHeadlinesFromCountry(country: String = "us") {
         launchSafely(showLoading = true) {
-            _uiState.value = NewsUiState.Loading
-            when (val result = newsRepository.fetchTopHeadlinesForCountry(country)) {
-                is ResultState.Success -> {
-                    val articles = result.data.articles
-                    _uiState.value = if (articles.isEmpty()) {
-                        NewsUiState.Empty("No headlines available right now.")
-                    } else {
-                        NewsUiState.Success(articles)
+            newsRepository.fetchTopHeadlinesForCountry(country).collect { result ->
+                when (result) {
+                    is ResultState.Loading -> {
+                        _uiState.value = NewsUiState.Loading
                     }
-                }
-
-                is ResultState.Error -> {
-                    _uiState.value = NewsUiState.Error(
-                        uiError = UiErrorMapper.map(result.error)
-                    )
+                    is ResultState.Success -> {
+                        val articles = result.data.articles
+                        _uiState.value = if (articles.isEmpty()) {
+                            NewsUiState.Empty("No headlines available right now.")
+                        } else {
+                            NewsUiState.Success(articles)
+                        }
+                    }
+                    is ResultState.Error -> {
+                        _uiState.value = NewsUiState.Error(
+                            uiError = UiErrorMapper.map(result.error)
+                        )
+                    }
                 }
             }
         }
@@ -49,8 +52,10 @@ class NewsViewModel(
                 is ResultState.Success -> {
 
                 }
-
                 is ResultState.Error -> {
+
+                }
+                is ResultState.Loading -> {
 
                 }
             }

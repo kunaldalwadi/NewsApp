@@ -71,7 +71,7 @@ fun NewsDetailScreen(
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun NewsDetailScreenPreview() {
     NewsAppTheme {

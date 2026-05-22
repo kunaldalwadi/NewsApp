@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -55,7 +56,7 @@ fun NewsScreen(
     modifier: Modifier = Modifier,
 ) {
     when (uiState) {
-        NewsUiState.Loading -> LoadingState(modifier)
+        is NewsUiState.Loading -> LoadingState(modifier)
         is NewsUiState.Error -> ErrorState(uiState.uiError, onRetryClick, modifier)
         is NewsUiState.Empty -> EmptyState(uiState.message, modifier)
         is NewsUiState.Success -> NewsList(
@@ -72,22 +73,19 @@ private fun NewsList(
     onNewsClick: (Article) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    LazyColumn(
+        state = rememberLazyListState(),
         modifier = modifier.fillMaxSize()
     ) {
-        LazyColumn(
-            state = rememberLazyListState(),
-            modifier = Modifier.weight(1f)
-        ) {
-            items(articles.size) { index ->
-                val article = articles[index]
-                NewsCard(
-                    title = article.title,
-                    imageUrl = article.urlToImage.orEmpty(),
-                    onNewsClick = { onNewsClick(article) },
-                )
-            }
+        items(
+            items = articles,
+            key = { article -> article.url }
+        ) { article ->
+            NewsCard(
+                title = article.title,
+                imageUrl = article.urlToImage.orEmpty(),
+                onNewsClick = { onNewsClick(article) },
+            )
         }
     }
 }

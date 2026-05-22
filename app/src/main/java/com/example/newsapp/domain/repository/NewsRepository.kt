@@ -1,13 +1,16 @@
 package com.example.newsapp.domain.repository
 
-import retrofit2.HttpException
 import com.example.newsapp.BuildConfig
 import com.example.newsapp.data.datamodel.News
 import com.example.newsapp.data.remotedatasource.NewsServiceEndpoints
 import com.example.newsapp.domain.common.AppError
 import com.example.newsapp.domain.common.ResultState
 import kotlinx.coroutines.CancellationException
-import okio.IOException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import retrofit2.HttpException
+import java.io.IOException
 import java.net.SocketTimeoutException
 
 class NewsRepository(
@@ -18,21 +21,28 @@ class NewsRepository(
     // such as an API, and possibly also methods to cache data locally.
     private val apiKey = BuildConfig.API_KEY
 
-    suspend fun fetchTopHeadlinesForCountry(country: String): ResultState<News> {
-        return try {
-            val topHeadlinesForCountry =
-                newsService.getTopHeadlinesForCountry(apiKey = apiKey, country = country)
-            ResultState.Success(topHeadlinesForCountry)
+    /**
+     * Updating the return type to Flow<ResultState<News>> allows us to emit multiple values over time,
+     * which is useful for handling loading states, success states, and error states in a more reactive way.
+     *
+     * When the return type is a type of flow suspend keyword is not needed as we are not returning
+     * a single value but a stream of values that can be collected asynchronously.
+     */
+    fun fetchTopHeadlinesForCountry(country: String): Flow<ResultState<News>> = flow {
+        emit(value = ResultState.Loading)
 
-            /**
-             * From what we have learnt,
-             *  - we need a cold flow from Repository to emit data to viewmodel.
-             *  - we need a hot flow from viewmodel to emit data to UI.
-             */
+        val topHeadlinesForCountry =
+            newsService.getTopHeadlinesForCountry(apiKey = apiKey, country = country)
 
-        } catch (e: Throwable) {
-            ResultState.Error(mapThrowableToAppError(e))
-        }
+        emit(value = ResultState.Success(data = topHeadlinesForCountry))
+
+        /**
+         *  - we need a cold flow from Repository to emit data to viewmodel.
+         *  - we need a hot flow from viewmodel to emit data to UI.
+         */
+
+    }.catch {
+        emit(value = ResultState.Error(mapThrowableToAppError(it)))
     }
 
     suspend fun fetchNewsForInput(input: String): ResultState<News> {

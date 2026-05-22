@@ -27,7 +27,7 @@ fun AppNavHost(
     ) {
         composable(Screen.Login.route) {
             LoginScreen(
-                onClick = {
+                onTopHeadlinesClick = {
                     navHostController.navigate(Screen.News.route)
                 })
         }
