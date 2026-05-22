@@ -60,4 +60,13 @@ sealed class Screen(
             showBackButton = true
         )
     )
+
+    data object Sources : Screen(
+        route = "sources",
+        appBarConfig = AppBarConfig(
+            title = "Sources",
+            visible = true,
+            showBackButton = true
+        )
+    )
 }

@@ -16,6 +16,7 @@ import com.example.newsapp.ui.theme.NewsAppTheme
 @Composable
 fun LoginScreen(
     onTopHeadlinesClick: () -> Unit,
+    onNewsSourcesClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -29,7 +30,7 @@ fun LoginScreen(
         )
         ButtonWithText(
             buttonText = "News Sources",
-            action = { }
+            action = onNewsSourcesClick
         )
         ButtonWithText(
             buttonText = "Countries",
@@ -51,7 +52,7 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     NewsAppTheme {
-        LoginScreen({})
+        LoginScreen({}, {})
     }
 }
 

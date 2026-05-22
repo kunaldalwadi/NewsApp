@@ -65,6 +65,7 @@ private fun screenForRoute(route: String?): Screen? {
         Screen.Login.route -> Screen.Login
         Screen.News.route -> Screen.News
         Screen.NewsDetail.route -> Screen.NewsDetail
+        Screen.Sources.route -> Screen.Sources
         else -> null
     }
 }

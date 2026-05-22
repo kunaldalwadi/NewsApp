@@ -77,7 +77,14 @@ fun NewsDetailScreenPreview() {
     NewsAppTheme {
         NewsDetailScreen(
             article = Article(
-                source = Source(id = "1", name = "Example Source"),
+                source = Source(
+                    id = "1", name = "Example Source",
+                    description = "This is a sample news source for preview purposes.",
+                    url = "https://example.com",
+                    category = "general",
+                    language = "en",
+                    country = "us"
+                ),
                 author = "John Doe",
                 title = "Sample News Title",
                 description = "This is a sample news description for preview purposes.",

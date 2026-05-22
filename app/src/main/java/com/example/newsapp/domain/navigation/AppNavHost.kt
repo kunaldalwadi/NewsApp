@@ -10,11 +10,15 @@ import androidx.navigation.compose.composable
 import com.example.newsapp.data.datamodel.Article
 import com.example.newsapp.domain.network.RetrofitInstance
 import com.example.newsapp.domain.repository.NewsRepository
+import com.example.newsapp.domain.repository.SourceRepository
 import com.example.newsapp.ui.login.LoginScreen
 import com.example.newsapp.ui.newsdetail.NewsDetailRoute
 import com.example.newsapp.ui.news.NewsRoute
 import com.example.newsapp.ui.news.NewsViewModel
 import com.example.newsapp.ui.news.NewsViewModelFactory
+import com.example.newsapp.ui.source.SourceRoute
+import com.example.newsapp.ui.source.SourceViewModel
+import com.example.newsapp.ui.source.SourceViewModelFactory
 
 @Composable
 fun AppNavHost(
@@ -29,11 +33,15 @@ fun AppNavHost(
             LoginScreen(
                 onTopHeadlinesClick = {
                     navHostController.navigate(Screen.News.route)
-                })
+                },
+                onNewsSourcesClick = {
+                    navHostController.navigate(Screen.Sources.route)
+                }
+            )
         }
         composable(Screen.News.route) {
-            val repository = NewsRepository(newsService = RetrofitInstance.newsServiceEndpoints)
-            val vm: NewsViewModel = viewModel(factory = NewsViewModelFactory(newsRepository = repository))
+            val newsRepository = NewsRepository(newsService = RetrofitInstance.newsServiceEndpoints)
+            val newsViewModel: NewsViewModel = viewModel(factory = NewsViewModelFactory(newsRepository = newsRepository))
 
             /**
              * In a real app, you would likely want to use a dependency injection framework like Hilt
@@ -52,7 +60,7 @@ fun AppNavHost(
              * controller to the NewsScreen composable, we can just pass dummy data to it.
              */
             NewsRoute(
-                viewModel = vm,
+                viewModel = newsViewModel,
                 onNewsClick = { article ->
                     navHostController.currentBackStackEntry?.savedStateHandle?.set(
                         key = "selected_article",
@@ -75,6 +83,13 @@ fun AppNavHost(
 
             NewsDetailRoute(
                 article = article
+            )
+        }
+        composable(Screen.Sources.route) {
+            val sourceRepository = SourceRepository(newsServiceEndpoints = RetrofitInstance.newsServiceEndpoints)
+            val sourceViewModel : SourceViewModel = viewModel(factory = SourceViewModelFactory(sourceRepository = sourceRepository))
+            SourceRoute(
+                viewModel = sourceViewModel
             )
         }
     }

@@ -3,15 +3,12 @@ package com.example.newsapp.domain.repository
 import com.example.newsapp.BuildConfig
 import com.example.newsapp.data.datamodel.News
 import com.example.newsapp.data.remotedatasource.NewsServiceEndpoints
-import com.example.newsapp.domain.common.AppError
 import com.example.newsapp.domain.common.ResultState
-import kotlinx.coroutines.CancellationException
+import com.example.newsapp.domain.network.mapThrowableToAppError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import retrofit2.HttpException
-import java.io.IOException
-import java.net.SocketTimeoutException
+import kotlinx.coroutines.CancellationException
 
 class NewsRepository(
     private val newsService: NewsServiceEndpoints
@@ -42,6 +39,7 @@ class NewsRepository(
          */
 
     }.catch {
+        if (it is CancellationException) throw it
         emit(value = ResultState.Error(mapThrowableToAppError(throwable = it)))
     }
 
@@ -52,26 +50,7 @@ class NewsRepository(
 
         emit(value = ResultState.Success(data = newsForInput))
     }.catch {
+        if (it is CancellationException) throw it
         emit(value = ResultState.Error(mapThrowableToAppError(throwable = it)))
-    }
-
-    private fun mapThrowableToAppError(throwable: Throwable): AppError {
-        return when (throwable) {
-            is CancellationException -> AppError.OperationCancelled
-            is SocketTimeoutException -> AppError.Timeout
-            is IOException -> AppError.NetworkUnavailable
-            is HttpException -> mapHttpCodeToAppError(throwable.code())
-            else -> AppError.Unknown(throwable)
-        }
-    }
-
-    private fun mapHttpCodeToAppError(code: Int): AppError {
-        return when (code) {
-            401 -> AppError.Unauthorized
-            403 -> AppError.Forbidden
-            404 -> AppError.NotFound
-            in 500..599 -> AppError.Server
-            else -> AppError.Http(code)
-        }
     }
 }

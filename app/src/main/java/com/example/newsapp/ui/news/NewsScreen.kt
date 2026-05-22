@@ -99,7 +99,15 @@ fun NewsScreenPreview() {
             uiState = NewsUiState.Success(
                 articles = listOf(
                     Article(
-                        source = Source(id = "1", name = "Source 1"),
+                        source = Source(
+                            id = "1",
+                            name = "Source 1",
+                            description = "Description of Source 1",
+                            url = "https://example.com/source1",
+                            category = "general",
+                            language = "en",
+                            country = "us"
+                            ),
                         author = "Author 1",
                         title = "Title 1",
                         description = "Description 1",
@@ -109,7 +117,15 @@ fun NewsScreenPreview() {
                         content = "Content of article 1"
                     ),
                     Article(
-                        source = Source(id = "2", name = "Source 2"),
+                        source = Source(
+                            id = "2",
+                            name = "Source 2",
+                            description = "Description of Source 2",
+                            url = "https://example.com/source2",
+                            category = "technology",
+                            language = "en",
+                            country = "us"
+                        ),
                         author = "Author 2",
                         title = "Title 2",
                         description = "Description 2",
