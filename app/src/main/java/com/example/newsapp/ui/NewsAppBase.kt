@@ -1,6 +1,5 @@
-package com.example.newsapp.ui.screen
+package com.example.newsapp.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
